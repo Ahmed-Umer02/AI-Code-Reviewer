@@ -17,6 +17,3 @@ logs/
 
 # Deployment files
 *.pem
-
-package-lock.json
-package.json

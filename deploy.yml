@@ -1,0 +1,38 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment on push to main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Node.js (if you're using Node.js)
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Adjust to your Node version
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Log in to Render using the Render API Key
+      - name: Login to Render
+        run: |
+          curl -fsSL https://ai-code-reviewer-ks1x.onrender.com | tar xz -C /usr/local/bin
+          render login --api-key ${{ secrets.RENDER_API_KEY }}
+
+      # Deploy to Render
+      - name: Deploy to Render
+        run: |
+          render deploy --service ${{ secrets.RENDER_SERVICE_NAME }} --branch main --dockerfile Dockerfile  # If you're using Dockerfile for your app
+          
+      # Optional: If you are using an existing containerized app (like a Node.js app with Docker), you can also push a Docker image.

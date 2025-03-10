@@ -7,6 +7,10 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
+app.get('/', (req, res) => {
+    res.send('AI Code Reviewer is running!');
+});
+
 // Webhook route for handling pull request events
 app.post('/webhook', async (req, res) => {
     try {

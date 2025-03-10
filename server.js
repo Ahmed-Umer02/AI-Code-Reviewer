@@ -5,7 +5,7 @@ const webhookController = require('./src/controllers/webhookController');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send('AI Code Reviewer is running!');

@@ -11,6 +11,12 @@ app.get('/', (req, res) => {
     res.send('AI Code Reviewer is running!');
 });
 
+// Sample test route
+app.post('/review', (req, res) => {
+    console.log("Received request:", req.body);
+    res.json({ message: "Code review started", data: req.body });
+});
+
 // Webhook route for handling pull request events
 app.post('/webhook', async (req, res) => {
     try {

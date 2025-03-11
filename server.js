@@ -23,7 +23,8 @@ app.post('/webhook', async (req, res) => {
         const event = req.body;
 
         // Handle pull request events specifically
-        if (event.action === 'opened' || event.action === 'synchronize') {
+        if (["opened", "synchronize", "reopened"].includes(event.action)) {
+
             const result = await webhookController.handlePullRequest(event);
 
             if (result.success) {
@@ -32,7 +33,8 @@ app.post('/webhook', async (req, res) => {
                 res.status(500).send(`Error: ${result.error}`);
             }
         } else {
-            res.status(400).send('Invalid event');
+            console.warn("Missing 'action' field in webhook event:", event);
+            return res.status(400).send("Missing 'action' field");
         }
     } catch (error) {
         console.error('Error processing webhook:', error.message);

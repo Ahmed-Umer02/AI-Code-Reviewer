@@ -10,9 +10,10 @@ async function getCodeReview(codeSnippet) {
     const url = `https://api-inference.huggingface.co/models/${modelName}`;
     const chunkSize = 10000; // Approx. 4096 tokens
     const chunks = [];
+    code = JSON.stringify(codeSnippet)
 
     for (let i = 0; i < code.length; i += chunkSize) {
-        chunks.push(JSON.stringify(code).substring(i, i + chunkSize));
+        chunks.push(code.substring(i, i + chunkSize));
     }
     
     let mergedResponse = [];
@@ -32,6 +33,7 @@ async function getCodeReview(codeSnippet) {
             mergedResponse.push({ error: "Failed to process chunk" });
         }
     }
+    console.log(mergedResponse, "5")
     // Combine all responses into a single string or object
     return {
         success: true,

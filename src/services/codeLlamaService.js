@@ -9,7 +9,7 @@ const modelName = 'codellama/CodeLlama-7b-hf';  // Use the Code Llama model
 async function getCodeReview(codeSnippet) {
     const url = `https://api-inference.huggingface.co/models/${modelName}`;
     const input_data = {
-        inputs: codeSnippet
+        inputs: JSON.stringify(codeSnippet)
     };
 
     try {

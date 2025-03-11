@@ -2,12 +2,13 @@ const axios = require('axios');
 const { GITHUB_TOKEN } = process.env;  // Assuming you are using an environment variable
 
 // Function to get the code from a pull request
-async function getPRCode(prUrl, oauthToken) {
+async function getPRCode(prUrl) {
     try {
-        console.log("GitHub Token:", prUrl, oauthToken)
+        console.log("GitHub Token:", prUrl)
         const response = await axios.get(prUrl, {
             headers: {
-                'Authorization': `Bearer ${oauthToken || GITHUB_TOKEN}`  // Use OAuth token or fallback to environment token
+                'Authorization': `Token ${GITHUB_TOKEN}`,
+                'Accept': "application/vnd.github.v3+json",
             }
         });
         console.log("Got through", response.data)
@@ -22,6 +23,7 @@ async function getPRCode(prUrl, oauthToken) {
                 code += fileContentResponse.data; // Append each modified/added file's content
             }
         }
+        console.log("Got through again", code)
 
         return code;
     } catch (error) {

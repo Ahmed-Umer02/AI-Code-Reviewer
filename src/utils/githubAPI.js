@@ -4,7 +4,7 @@ const { GITHUB_TOKEN } = process.env;  // Assuming you are using an environment 
 // Function to get the code from a pull request
 async function getPRCode(prUrl) {
     try {
-        console.log("GitHub Token:", prUrl)
+        console.log("GitHub Token:", GITHUB_TOKEN)
         const response = await axios.get(prUrl, {
             headers: {
                 'Authorization': `token ${GITHUB_TOKEN}`,

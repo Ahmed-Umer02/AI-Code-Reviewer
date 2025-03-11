@@ -8,23 +8,35 @@ const modelName = 'codellama/CodeLlama-7b-hf';  // Use the Code Llama model
 // Function to send code to Hugging Face API for review
 async function getCodeReview(codeSnippet) {
     const url = `https://api-inference.huggingface.co/models/${modelName}`;
-    const input_data = {
-        inputs: JSON.stringify(codeSnippet)
-    };
+    const chunkSize = 10000; // Approx. 4096 tokens
+    const chunks = [];
 
-    try {
-        const response = await axios.post(url, input_data, {
-            headers: {
-                'Authorization': `Bearer ${HF_TOKEN}`
-            }
-        });
-
-        // Returning the output from the model
-        return response.data;
-    } catch (error) {
-        console.error('Error interacting with Hugging Face API:', error.response ? error.response.data : error.message);
-        throw new Error('Failed to get code review');
+    for (let i = 0; i < code.length; i += chunkSize) {
+        chunks.push(JSON.stringify(code).substring(i, i + chunkSize));
     }
+    
+    let mergedResponse = [];
+    // Process each chunk separately
+    for (const chunk of chunks) {
+        try {
+            const response = await axios.post(url, input_data, {
+                headers: {
+                    'Authorization': `Bearer ${HF_TOKEN}`
+                }
+            });
+
+            // Assuming response.data contains review comments or suggestions
+            mergedResponse.push(response.data);
+        } catch (error) {
+            console.error("Error processing chunk:", error);
+            mergedResponse.push({ error: "Failed to process chunk" });
+        }
+    }
+    // Combine all responses into a single string or object
+    return {
+        success: true,
+        review: mergedResponse.flat() // Flatten array in case responses are nested
+    };
 }
 
 module.exports = { getCodeReview };

@@ -1,4 +1,5 @@
 const axios = require('axios');
+require("dotenv").config();
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;  // Assuming you are using an environment variable
 
 // Function to get the code from a pull request

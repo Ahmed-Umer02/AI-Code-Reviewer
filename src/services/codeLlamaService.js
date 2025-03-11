@@ -20,7 +20,7 @@ async function getCodeReview(codeSnippet) {
     // Process each chunk separately
     for (const chunk of chunks) {
         try {
-            const response = await axios.post(url, input_data, {
+            const response = await axios.post(url, chunk, {
                 headers: {
                     'Authorization': `Bearer ${HF_TOKEN}`
                 }

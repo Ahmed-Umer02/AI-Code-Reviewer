@@ -31,7 +31,7 @@ describe('GitHub API', () => {
             data: 'const x = 10; console.log(x);'
         });
 
-        const code = await githubAPI.getPRCode(prUrl, oauthToken);
+        const code = await githubAPI.getPRCode(prUrl);
 
         // Verifying that the code returned is correct
         expect(code).toBe('const x = 10; console.log(x);');
@@ -50,7 +50,7 @@ describe('GitHub API', () => {
             data: { id: 123, body: review }
         });
 
-        const response = await githubAPI.postPRReview(prId, review, oauthToken);
+        const response = await githubAPI.postPRReview(prId, review);
 
         // Verifying that the response contains correct review details
         expect(response.body).toBe(review);
@@ -60,6 +60,6 @@ describe('GitHub API', () => {
         // Simulating an error response from GitHub API for posting review
         axios.post.mockRejectedValueOnce(new Error('GitHub API error'));
 
-        await expect(githubAPI.postPRReview(prId, review, oauthToken)).rejects.toThrow('Failed to post pull request review');
+        await expect(githubAPI.postPRReview(prId, review)).rejects.toThrow('Failed to post pull request review');
     });
 });

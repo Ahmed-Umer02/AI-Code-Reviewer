@@ -7,7 +7,7 @@ async function getPRCode(prUrl) {
         console.log("GitHub Token:", prUrl)
         const response = await axios.get(prUrl, {
             headers: {
-                'Authorization': `Token ${GITHUB_TOKEN}`,
+                'Authorization': `token ${GITHUB_TOKEN}`,
                 'Accept': "application/vnd.github.v3+json",
             }
         });
@@ -33,7 +33,7 @@ async function getPRCode(prUrl) {
 }
 
 // Function to post a code review comment on the pull request
-async function postPRReview(prId, review, oauthToken) {
+async function postPRReview(prId, review) {
     try {
         const url = `https://api.github.com/repos/owner/repo/pulls/${prId}/reviews`;  // Replace with actual repo info
         const response = await axios.post(url, {
@@ -41,7 +41,8 @@ async function postPRReview(prId, review, oauthToken) {
             event: 'COMMENT'  // Assuming you want to comment on the review, can be 'APPROVE' or 'REQUEST_CHANGES'
         }, {
             headers: {
-                'Authorization': `Bearer ${oauthToken || GITHUB_TOKEN}`  // Use OAuth token or fallback to environment token
+                'Authorization': `token ${GITHUB_TOKEN}`,
+                'Accept': "application/vnd.github.v3+json",
             }
         });
 

@@ -6,5 +6,6 @@ module.exports = {
     GITHUB_WEBHOOK_SECRET: process.env.GITHUB_WEBHOOK_SECRET || 'your-webhook-secret',
     GITHUB_APP_ID: process.env.GITHUB_APP_ID || 'your-app-id',
     GITHUB_API_URL: 'https://api.github.com',  // GitHub's public API base URL
+    GITHUB_TOKEN: process.env.GITHUB_TOKEN || 'your-token',
   };
   

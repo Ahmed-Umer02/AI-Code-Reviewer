@@ -5,28 +5,25 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN;  // Assuming you are using an env
 // Function to get the code from a pull request
 async function getPRCode(prUrl) {
     try {
-        console.log("GitHub Token:", GITHUB_TOKEN)
         const response = await axios.get(prUrl, {
             headers: {
                 'Authorization': `token ${GITHUB_TOKEN}`,
                 'Accept': "application/vnd.github.v3+json",
             }
         });
-        console.log("Got through", response.data)
         // Assuming response.data contains the files changed in the pull request
-        const filesChanged = response.data.files || [];
-        let code = '';
+        // const filesChanged = response.data.files || [];
+        // let code = '';
 
-        // Extracting code from the changed files
-        for (const file of filesChanged) {
-            if (file.status === 'modified' || file.status === 'added') {
-                const fileContentResponse = await axios.get(file.raw_url);
-                code += fileContentResponse.data; // Append each modified/added file's content
-            }
-        }
-        console.log("Got through again", code)
+        // // Extracting code from the changed files
+        // for (const file of filesChanged) {
+        //     if (file.status === 'modified' || file.status === 'added') {
+        //         const fileContentResponse = await axios.get(file.raw_url);
+        //         code += fileContentResponse.data; // Append each modified/added file's content
+        //     }
+        // }
 
-        return code;
+        return response.data;
     } catch (error) {
         console.error('Error fetching PR code:', error.message);
         throw new Error('Failed to fetch pull request code');

@@ -68,7 +68,12 @@ async function getCodeReview(codeSnippet) {
                 allReviews.push(response.data);
             }
         } catch (error) {
-            console.error("Error processing chunk:", error.message, error.response?.data);
+            if (error.response?.status === 504 && i < retries - 1) {
+                console.warn(`Retrying request (${i + 1}/${retries}) in ${delay * (i + 1)}ms...`);
+                await new Promise(res => setTimeout(res, delay * (i + 1))); // Exponential backoff
+            } else {
+                console.error("Error processing chunk:", error.message, error.response?.data);
+            }
         }
     }
 

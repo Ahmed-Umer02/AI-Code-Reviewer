@@ -58,7 +58,13 @@ async function getCodeReview(codeSnippet) {
     
     for (let chunk of chunks) {
         try {
-            const response = await postWithRetry(url, chunk);
+            const response = await axios.post(url,
+                JSON.stringify({ inputs: chunk }),  // Ensure JSON string format
+            {
+                headers: { 
+                    'Authorization': `Bearer ${HF_TOKEN}`,
+                }
+            });
 
             if (response.data) {
                 allReviews.push(response.data);
@@ -68,22 +74,6 @@ async function getCodeReview(codeSnippet) {
         }
     }
 
-    // for (const chunk of chunks) {
-    //     try {
-    //         const response = await postWithRetry(url, chunk);
-    //         // const response = await axios.post(url, {
-    //         //     inputs: chunk
-    //         // });
-
-    //         // Assuming response.data contains review comments or suggestions
-    //         if (response.data) {
-    //             mergedResponse.push(response.data);
-    //         }
-    //     } catch (error) {
-    //         console.error("Error processing chunk:", error);
-    //         mergedResponse.push({ error: "Failed to process chunk" });
-    //     }
-    // }
     console.log("5")
     // Combine all responses into a single string or object
     return {

@@ -53,7 +53,7 @@ async function getCodeReview(codeSnippet) {
 
     let allReviews = [];
     
-    for (let chunk of codeChunks) {
+    for (let chunk of chunks) {
         try {
             const response = await axios.post(url, { inputs: chunk }, {
                 headers: { 'Authorization': `Bearer ${HF_API_KEY}` }

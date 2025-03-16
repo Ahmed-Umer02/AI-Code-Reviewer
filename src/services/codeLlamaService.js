@@ -8,7 +8,7 @@ const modelName = 'codellama/CodeLlama-7b-hf';  // Use the Code Llama model
 async function postWithRetry(url, data, retries = 3, delay = 2000) {
     for (let i = 0; i < retries; i++) {
         try {
-            return await axios.post(url, data,{
+            return await axios.post(url, { inputs: data },{
                 headers: {
                     'Authorization': `Bearer ${HF_TOKEN}`,
             }});
@@ -23,34 +23,67 @@ async function postWithRetry(url, data, retries = 3, delay = 2000) {
     }
 }
 
+function chunkString(str, maxTokens) {
+    const words = str.split(/\s+/);
+    let chunks = [];
+    let chunk = [];
+
+    for (const word of words) {
+        if ((chunk.join(" ").length + word.length) > maxTokens) {
+            chunks.push(chunk.join(" "));
+            chunk = [];
+        }
+        chunk.push(word);
+    }
+    if (chunk.length) {
+        chunks.push(chunk.join(" "));
+    }
+    return chunks;
+}
+
 // Function to send code to Hugging Face API for review
 async function getCodeReview(codeSnippet) {
     const url = `https://api-inference.huggingface.co/models/${modelName}`;
-    const chunkSize = 2048; // Approx. 4096 tokens
-    const chunks = [];
     code = JSON.stringify(codeSnippet)
 
-    for (let i = 0; i < 4096; i += chunkSize) {
-        chunks.push(code.substring(i, i + chunkSize));
-    }
+    const chunks = chunkString(code, 2048);
     
     let mergedResponse = [];
     // Process each chunk separately
-    for (const chunk of chunks) {
-        try {
-            const response = await postWithRetry(url, chunk);
-            // const response = await axios.post(url, {
-            //     inputs: chunk
-            // });
 
-            // Assuming response.data contains review comments or suggestions
-            mergedResponse.push(response.data);
+    let allReviews = [];
+    
+    for (let chunk of codeChunks) {
+        try {
+            const response = await axios.post(url, { inputs: chunk }, {
+                headers: { 'Authorization': `Bearer ${HF_API_KEY}` }
+            });
+
+            if (response.data) {
+                allReviews.push(response.data);
+            }
         } catch (error) {
-            console.error("Error processing chunk:", error);
-            mergedResponse.push({ error: "Failed to process chunk" });
+            console.error("Error processing chunk:", error.message);
         }
     }
-    console.log(mergedResponse, "5")
+
+    // for (const chunk of chunks) {
+    //     try {
+    //         const response = await postWithRetry(url, chunk);
+    //         // const response = await axios.post(url, {
+    //         //     inputs: chunk
+    //         // });
+
+    //         // Assuming response.data contains review comments or suggestions
+    //         if (response.data) {
+    //             mergedResponse.push(response.data);
+    //         }
+    //     } catch (error) {
+    //         console.error("Error processing chunk:", error);
+    //         mergedResponse.push({ error: "Failed to process chunk" });
+    //     }
+    // }
+    console.log("5")
     // Combine all responses into a single string or object
     return {
         success: true,

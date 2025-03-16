@@ -55,15 +55,20 @@ async function getCodeReview(codeSnippet) {
     
     for (let chunk of chunks) {
         try {
-            const response = await axios.post(url, { inputs: chunk }, {
-                headers: { 'Authorization': `Bearer ${HF_TOKEN}` }
-            });
+            const response = await await axios.post(url, 
+                JSON.stringify({ inputs: chunk }),  // Ensure JSON string format
+                {
+                    headers: { 
+                        'Authorization': `Bearer ${HF_TOKEN}`,
+                    }
+                }
+            );
 
             if (response.data) {
                 allReviews.push(response.data);
             }
         } catch (error) {
-            console.error("Error processing chunk:", error.message);
+            console.error("Error processing chunk:", error.message, error.response?.data);
         }
     }
 

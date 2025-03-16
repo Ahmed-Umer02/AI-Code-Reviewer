@@ -8,7 +8,7 @@ const modelName = 'codellama/CodeLlama-7b-hf';  // Use the Code Llama model
 // Function to send code to Hugging Face API for review
 async function getCodeReview(codeSnippet) {
     const url = `https://api-inference.huggingface.co/models/${modelName}`;
-    const chunkSize = 10000; // Approx. 4096 tokens
+    const chunkSize = 4096; // Approx. 4096 tokens
     const chunks = [];
     code = JSON.stringify(codeSnippet)
 
@@ -20,15 +20,15 @@ async function getCodeReview(codeSnippet) {
     // Process each chunk separately
     for (const chunk of chunks) {
         try {
-            // const response = await axios.post(url, chunk, {
-            //     headers: {
-            //         'Authorization': `Bearer ${HF_TOKEN}`,
+            const response = await axios.post(url, chunk, {
+                headers: {
+                    'Authorization': `Bearer ${HF_TOKEN}`,
                     
-            //     }
-            // });
-            const response = await axios.post(url, {
-                inputs: chunk
+                }
             });
+            // const response = await axios.post(url, {
+            //     inputs: chunk
+            // });
 
             // Assuming response.data contains review comments or suggestions
             mergedResponse.push(response.data);

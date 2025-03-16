@@ -8,10 +8,13 @@ const modelName = 'codellama/CodeLlama-7b-hf';  // Use the Code Llama model
 async function postWithRetry(url, data, retries = 3, delay = 2000) {
     for (let i = 0; i < retries; i++) {
         try {
-            return await axios.post(url, { inputs: data },{
-                headers: {
+            return await axios.post(url,
+                JSON.stringify({ inputs: data }),  // Ensure JSON string format
+            {
+                headers: { 
                     'Authorization': `Bearer ${HF_TOKEN}`,
-            }});
+                }
+            });
         } catch (error) {
             if (error.response?.status === 504 && i < retries - 1) {
                 console.warn(`Retrying request (${i + 1}/${retries})...`);
@@ -55,25 +58,13 @@ async function getCodeReview(codeSnippet) {
     
     for (let chunk of chunks) {
         try {
-            const response = await await axios.post(url, 
-                JSON.stringify({ inputs: chunk }),  // Ensure JSON string format
-                {
-                    headers: { 
-                        'Authorization': `Bearer ${HF_TOKEN}`,
-                    }
-                }
-            );
+            const response = await postWithRetry(url, chunk);
 
             if (response.data) {
                 allReviews.push(response.data);
             }
         } catch (error) {
-            if (error.response?.status === 504 && i < retries - 1) {
-                console.warn(`Retrying request (${i + 1}/${retries}) in ${delay * (i + 1)}ms...`);
-                await new Promise(res => setTimeout(res, delay * (i + 1))); // Exponential backoff
-            } else {
-                console.error("Error processing chunk:", error.message, error.response?.data);
-            }
+            console.error("Error processing chunk:", error.message, error.response?.data);
         }
     }
 

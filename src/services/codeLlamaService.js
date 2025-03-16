@@ -20,10 +20,14 @@ async function getCodeReview(codeSnippet) {
     // Process each chunk separately
     for (const chunk of chunks) {
         try {
-            const response = await axios.post(url, chunk, {
-                headers: {
-                    'Authorization': `Bearer ${HF_TOKEN}`
-                }
+            // const response = await axios.post(url, chunk, {
+            //     headers: {
+            //         'Authorization': `Bearer ${HF_TOKEN}`,
+                    
+            //     }
+            // });
+            const response = await axios.post(url, {
+                inputs: chunk
             });
 
             // Assuming response.data contains review comments or suggestions

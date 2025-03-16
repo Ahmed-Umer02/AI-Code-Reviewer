@@ -30,7 +30,7 @@ async function getCodeReview(codeSnippet) {
     const chunks = [];
     code = JSON.stringify(codeSnippet)
 
-    for (let i = 0; i < code.length; i += chunkSize) {
+    for (let i = 0; i < 10000; i += chunkSize) {
         chunks.push(code.substring(i, i + chunkSize));
     }
     
